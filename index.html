@@ -141,11 +141,50 @@
         // reference to the DB
         var database = firebase.database();
 
+        var currentTime = moment();
+
+        database.ref().on("child_added", function (snapshot) {
+            console.log(snapshot.val());
+
+            // Store everything into a variable.
+            var snapTrain = snapshot.val().trainName;
+            var snapDestination = snapshot.val().destination;
+            var snapTime = snapshot.val().time;
+            var snapNextTrain = snapshot.val().testNextTrain;
+            var snapFrequency = snapshot.val().frequency;
+            var snapAway = snapshot.val().testMinutesTillTrain;
+
+            // Employee Info
+            console.log(snapTrain);
+            console.log(snapDestination);
+            console.log(snapTime);
+            console.log(snapFrequency);
+
+
+            // Create the new row
+            var newRow = $("<tr>").append(
+                $("<td>").text(snapTrain),
+                $("<td>").text(snapDestination),
+                $("<td>").text(snapFrequency),
+                $("<td>").text(snapNextTrain),
+                $("<td>").text(snapAway)
+            );
+
+            // Append the new row to the table
+            $("#schedule-table > tbody").append(newRow);
+        });
+
+
+
+
+
         //Intial Values
         var trainName = "";
         var destination = "";
         var time = "";
         var frequency = "";
+
+
 
 
 
@@ -159,7 +198,7 @@
             // Grabbed values from text-boxes
             trainName = $("#name-input").val().trim();
             destination = $("#destination-input").val().trim();
-            time = moment($("#firstTime-input").val().trim(), "MM/DD/YYYY").format("X");
+            time = $("#firstTime-input").val().trim();
             frequency = $("#frequency-input").val().trim();
 
             console.log(trainName);
@@ -168,11 +207,62 @@
             console.log(frequency);
 
 
+
+
+
+
+
+            var testFrequency = frequency;
+
+            var testTimeConverted = moment(time, "hh:mm").subtract("1, years");
+
+            var testDiffTime = currentTime.diff(moment(testTimeConverted), "minutes");
+
+            var testRemainder = testDiffTime % testFrequency;
+
+            var testMinutesTillTrain = testFrequency - testRemainder;
+
+            var testNextTrain = moment().add(testMinutesTillTrain, "minutes").format("hh:mm a");
+
+
+
+console.log(testFrequency
+
+
+
+
+)
+console.log(testTimeConverted)
+console.log(testDiffTime)
+console.log(testRemainder)
+console.log(testMinutesTillTrain)
+console.log(testNextTrain)
+
+
+            // // var testCurrentTime = moment();
+            // // console.log("TEST CURRENT TIME: " + moment(testCurrentTime).format("HH:mm"));
+
+
+            // console.log("DIFFERENCE IN TIMETEST: " + testDiffTime);
+
+            // console.log(testRemainder);
+
+
+            // console.log("MINUTES TILL TRAIN: " + testMinutesTillTrain);
+
+            // // Next Train
+
+            // console.log("ARRIVAL TIME: " + moment(testNextTrain).format("hh:mm"));
+
+
+
             database.ref().push({
                 trainName: trainName,
                 destination: destination,
                 time: time,
-                frequency: frequency
+                frequency: testFrequency,
+                testNextTrain: testNextTrain,
+                testMinutesTillTrain: testMinutesTillTrain
             });
 
             // Clears all of the text-boxes
@@ -181,27 +271,6 @@
             $("#firstTime-input").val("");
             $("#frequency-input").val("");
 
-            var testFrequency = frequency;
-            var testTime = time;
-            var testTimeConverted = moment(testTime, "HH:mm").subtract(1, "years");
-
-            console.log(testTimeConverted)
-            
-            var testCurrentTime = moment();
-            console.log("TEST CURRENT TIME: " + moment(testCurrentTime).format("HH:mm"));
-
-            var testDiffTime = moment().diff(moment(testTimeConverted), "minutes");
-            console.log("DIFFERENCE IN TIMETEST: " + testDiffTime);
-            var testRemainder = testDiffTime % testFrequency;
-            console.log(testRemainder);
-
-            var testMinutesTillTrain = testFrequency - testRemainder;
-            console.log("MINUTES TILL TRAIN: " + testMinutesTillTrain);
-
-            // Next Train
-            var testNextTrain = moment().add(testMinutesTillTrain, "minutes");
-            console.log("ARRIVAL TIME: " + moment(testNextTrain).format("hh:mm"));
-
         });
 
 
@@ -210,47 +279,6 @@
 
 
 
-        database.ref().on("child_added", function (snapshot) {
-            console.log(snapshot.val());
-
-            // Store everything into a variable.
-            var snapTrain = snapshot.val().trainName;
-            var snapDestination = snapshot.val().destination;
-            var snapTime = snapshot.val().time;
-            var snapFrequency = snapshot.val().frequency;
-            // var snapAway = snapshot.val().away;
-
-            // Employee Info
-            console.log(snapTrain);
-            console.log(snapDestination);
-            console.log(snapTime);
-            console.log(snapFrequency);
-            // console.log(snapAway);
-
-            //   // Prettify the employee start
-            //   var empStartPretty = moment.unix(empStart).format("MM/DD/YYYY");
-
-            //   // Calculate the months worked using hardcore math
-            //   // To calculate the months worked
-            //   var empMonths = moment().diff(moment(empStart, "X"), "months");
-            //   console.log(empMonths);
-
-            //   // Calculate the total billed rate
-            //   var empBilled = empMonths * empRate;
-            //   console.log(empBilled);
-
-            // Create the new row
-            var newRow = $("<tr>").append(
-                $("<td>").text(snapTrain),
-                $("<td>").text(snapDestination),
-                $("<td>").text(snapTime),
-                $("<td>").text(snapFrequency),
-                // $("<td>").text(snapAway)
-            );
-
-            // Append the new row to the table
-            $("#schedule-table > tbody").append(newRow);
-        });
 
     </script>
 </body>
