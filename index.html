@@ -149,12 +149,12 @@
             // Store everything into a variable.
             var snapTrain = snapshot.val().trainName;
             var snapDestination = snapshot.val().destination;
-            var snapTime = snapshot.val().time;
+            var snapTime = snapshot.val().firstTime;
             var snapNextTrain = snapshot.val().testNextTrain;
             var snapFrequency = snapshot.val().frequency;
             var snapAway = snapshot.val().testMinutesTillTrain;
 
-            // Employee Info
+        
             console.log(snapTrain);
             console.log(snapDestination);
             console.log(snapTime);
@@ -181,7 +181,7 @@
         //Intial Values
         var trainName = "";
         var destination = "";
-        var time = "";
+        var firstTime = "";
         var frequency = "";
 
 
@@ -198,25 +198,17 @@
             // Grabbed values from text-boxes
             trainName = $("#name-input").val().trim();
             destination = $("#destination-input").val().trim();
-            time = $("#firstTime-input").val().trim();
+            firstTime = $("#firstTime-input").val().trim();
             frequency = $("#frequency-input").val().trim();
-
-            console.log(trainName);
-            console.log(destination);
-            console.log(time);
-            console.log(frequency);
-
-
-
-
-
 
 
             var testFrequency = frequency;
 
-            var testTimeConverted = moment(time, "hh:mm").subtract("1, years");
+            var testTimeConverted = moment(firstTime, "hh:mm").subtract("1, years");
 
-            var testDiffTime = currentTime.diff(moment(testTimeConverted), "minutes");
+            var testCurrentTime = moment();
+
+            var testDiffTime = testCurrentTime.diff(moment(testTimeConverted), "minutes");
 
             var testRemainder = testDiffTime % testFrequency;
 
@@ -226,40 +218,18 @@
 
 
 
-console.log(testFrequency
-
-
-
-
-)
+console.log(testFrequency)
 console.log(testTimeConverted)
+console.log(testCurrentTime)
 console.log(testDiffTime)
 console.log(testRemainder)
 console.log(testMinutesTillTrain)
 console.log(testNextTrain)
 
-
-            // // var testCurrentTime = moment();
-            // // console.log("TEST CURRENT TIME: " + moment(testCurrentTime).format("HH:mm"));
-
-
-            // console.log("DIFFERENCE IN TIMETEST: " + testDiffTime);
-
-            // console.log(testRemainder);
-
-
-            // console.log("MINUTES TILL TRAIN: " + testMinutesTillTrain);
-
-            // // Next Train
-
-            // console.log("ARRIVAL TIME: " + moment(testNextTrain).format("hh:mm"));
-
-
-
             database.ref().push({
                 trainName: trainName,
                 destination: destination,
-                time: time,
+                firstTime: firstTime,
                 frequency: testFrequency,
                 testNextTrain: testNextTrain,
                 testMinutesTillTrain: testMinutesTillTrain
